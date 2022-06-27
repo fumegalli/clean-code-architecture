@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+	  "main": "tsc && node ./dist/main",
+	  "test": "tsc && jest ./dist/test",
+	  "coverage": "tsc && jest ./dist/test --coverage"
   },
   "keywords": [],
   "author": "",
