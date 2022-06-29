@@ -1,12 +1,20 @@
-export default class OrderItem {
+import Item from "./Item";
 
+export default class OrderItem {
     constructor (
-        readonly id: number,
-        readonly price: number,
+        readonly item: Item,
         readonly quantity: number,
     ) {}
 
-    getTotal () {
-        return this.price * this.quantity;
+    getTotalPrice () {
+        return this.item.price * this.quantity;
+    }
+
+    getTotalVolume () {
+        return this.item.volume * this.quantity;
+    }
+
+    getTotalDensity () {
+        return this.item.density * this.quantity;
     }
 }
