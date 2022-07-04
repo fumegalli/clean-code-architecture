@@ -39,3 +39,9 @@
 * **Método longos**
     * Separar responsabilidades (SRP)
     * Fechar para modificação e abrir para extensação (OCP)
+
+* **Variável declarada longe da sua utilização**
+    * Mover para o local mais adequado
+
+* **Variável declarada em conjunto**
+    * Desagrupar variáveis
