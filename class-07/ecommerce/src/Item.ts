@@ -21,6 +21,8 @@ export default class Item {
     }
 
     getDensity (): number {
+        const volume = this.getVolume();
+        if (this.weightKg === 0 || volume === 0) return 0;
         return Math.trunc(this.weightKg / this.getVolume());
     }
 }
