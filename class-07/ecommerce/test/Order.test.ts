@@ -63,7 +63,7 @@ test("should calculate order freight", () => {
     const itemDepthCm = 10;
     item.addDimensions(itemHeightCm, itemWidthCm, itemDepthCm);
     order.addItem(item, itemQuantity);
-    order.addFreight(new Freight());
+    order.addFreight(new Freight(item.getVolume(), item.getDensity()));
     const total = order.getTotal();
 
     expect(total).toBe(130);

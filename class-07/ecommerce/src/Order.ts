@@ -17,8 +17,8 @@ export default class Order {
 
     addItem (item: Item, quantity: number): void {
         if (quantity < 0) throw new Error("Item quantity cant be negative");
-        if (this.orderItems.some((orderItem) => orderItem.item.id === item.id)) throw new Error("Same item cant be add twice");
-        this.orderItems.push(new OrderItem(item, quantity));
+        if (this.orderItems.some((orderItem) => orderItem.itemId === item.id)) throw new Error("Same item cant be add twice");
+        this.orderItems.push(new OrderItem(item.id, item.price, quantity));
     }
     
     addCoupon (coupon: Coupon): void {
@@ -36,7 +36,7 @@ export default class Order {
             return total;
         }, 0);
         if (this.coupon) total -= this.coupon.calculateDiscount(total);
-        if (this.freight) total += this.freight.getTotalCost(this.orderItems);
+        if (this.freight) total += this.freight.getTotalCost();
         return total;
     }
 
