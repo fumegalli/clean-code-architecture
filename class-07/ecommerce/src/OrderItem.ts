@@ -1,11 +1,20 @@
+import Item from "./Item";
+
 export default class OrderItem {
     constructor (
-        readonly id: number,
-        readonly price: number,
+        readonly item: Item,
         readonly quantity: number,
     ) {}
 
     getTotal (): number {
-        return this.price * this.quantity;
+        return this.item.price * this.quantity;
+    }
+
+    getVolume (): number {
+        return this.item.getVolume();
+    }
+
+    getDensity (): number {
+        return this.item.getDensity();
     }
 }
