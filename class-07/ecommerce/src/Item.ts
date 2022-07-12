@@ -1,28 +1,19 @@
 import Dimensions from "./Dimensions";
 
 export default class Item {
-    dimensions?: Dimensions;
 
     constructor (
         readonly id: number,
         readonly description: string,
         readonly price: number,
-        readonly weightKg: number = 0,
-    ){
-        if (weightKg < 0) throw new Error("Weight cant be negative");
-    }
-
-    addDimensions (heightCm: number, widthCm: number, depthCm: number): void {
-        this.dimensions = new Dimensions(heightCm, widthCm, depthCm);
-    }
+        readonly dimensions: Dimensions = new Dimensions(),
+    ){}
 
     getVolume (): number {
-        return this.dimensions?.getVolume() || 0;
+        return this.dimensions.getVolume();
     }
 
     getDensity (): number {
-        const volume = this.getVolume();
-        if (this.weightKg === 0 || volume === 0) return 0;
-        return Math.trunc(this.weightKg / this.getVolume());
+        return this.dimensions.getDensity();
     }
 }

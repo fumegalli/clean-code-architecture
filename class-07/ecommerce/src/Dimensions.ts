@@ -1,15 +1,20 @@
 export default class Dimensions {
-    private readonly CM_TO_CUBIC_METERS = 1000000;
 
     constructor (
-        readonly heightCm: number,
-        readonly widthCm: number,
-        readonly depthCm: number,
+        readonly widthCm: number = 0,
+        readonly heightCm: number = 0,
+        readonly depthCm: number = 0,
+        readonly weightKg: number = 0,
     ) {
-        if (heightCm < 0 || widthCm < 0 || depthCm < 0) throw new Error("Dimensions cant be negative");
+        if (heightCm < 0 || widthCm < 0 || depthCm < 0 || weightKg < 0) throw new Error("Dimensions cant be negative");
     }
 
     getVolume (): number {
-        return (this.heightCm * this.widthCm * this.depthCm) / this.CM_TO_CUBIC_METERS;
+        return this.heightCm/100 * this.widthCm/100 * this.depthCm/100;
+    }
+
+    getDensity (): number {
+        if (this.getVolume() === 0) return 0;
+        return this.weightKg / this.getVolume();
     }
 }

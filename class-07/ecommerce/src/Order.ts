@@ -1,6 +1,6 @@
 import Coupon from "./Coupon";
 import Cpf from "./Cpf";
-import Freight from "./Freight";
+import FreightCalculator from "./FreightCalculator";
 import Item from "./Item";
 import OrderItem from "./OrderItem";
 
@@ -9,25 +9,21 @@ export default class Order {
     orderItems: OrderItem[] = [];
     date: Date = new Date();
     coupon?: Coupon;
-    freight?: Freight;
+    freight = 0;
 
     constructor (cpf: string) {
         this.cpf = new Cpf(cpf);
     }
 
     addItem (item: Item, quantity: number): void {
-        if (quantity < 0) throw new Error("Item quantity cant be negative");
         if (this.orderItems.some((orderItem) => orderItem.itemId === item.id)) throw new Error("Same item cant be add twice");
         this.orderItems.push(new OrderItem(item.id, item.price, quantity));
+        this.freight += FreightCalculator.calculate(item) * quantity;
     }
     
     addCoupon (coupon: Coupon): void {
-        if (coupon.isExpired(this.date)) throw new Error("Coupon is expired");
+        if (coupon.isExpired(this.date)) return;
         this.coupon = coupon;
-    }
-
-    addFreight (freight: Freight): void {
-        this.freight = freight;
     }
 
     getTotal (): number {
@@ -36,7 +32,7 @@ export default class Order {
             return total;
         }, 0);
         if (this.coupon) total -= this.coupon.calculateDiscount(total);
-        if (this.freight) total += this.freight.getTotalCost();
+        if (this.freight) total += this.freight;
         return total;
     }
 
