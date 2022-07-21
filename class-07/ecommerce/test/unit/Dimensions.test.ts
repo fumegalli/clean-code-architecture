@@ -1,4 +1,4 @@
-import Dimensions from "../src/Dimensions";
+import Dimensions from "../../src/domain/entities/Dimensions";
 
 test("should throw error when height is negative", () => {
     const height = -20;

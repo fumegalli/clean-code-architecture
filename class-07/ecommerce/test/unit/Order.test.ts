@@ -1,7 +1,7 @@
-import Coupon from "../src/Coupon";
-import Dimensions from "../src/Dimensions";
-import Item from "../src/Item";
-import Order from "../src/Order";
+import Coupon from "../../src/domain/entities/Coupon";
+import Dimensions from "../../src/domain/entities/Dimensions";
+import Item from "../../src/domain/entities/Item";
+import Order from "../../src/domain/entities/Order";
 
 test("should not create an order with invalid CPF", () => {
     expect(() => new Order("invalidCPF")).toThrow(new Error("Invalid CPF"));
