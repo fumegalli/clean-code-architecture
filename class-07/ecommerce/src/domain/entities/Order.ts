@@ -42,4 +42,8 @@ export default class Order {
         return this.code.value;
     }
 
+    getCpf (): string {
+        return this.cpf.getValue();
+    }
+
 }

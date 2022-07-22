@@ -61,3 +61,13 @@ test("should create an order with 3 items and calculate freight", () => {
 
     expect(total).toBe(290);
 });
+
+test("should create an order and generate code", () => {
+    const order = new Order("935.411.347-80", new Date("2022-03-01T10:00:00"), 1);
+    order.addItem(new Item(1, "Panela", 100), 1);
+    order.addItem(new Item(2, "Garfolher", 15), 2);
+    order.addItem(new Item(3, "Faca", 5), 2);
+    const code = order.getCode();
+
+    expect(code).toBe("202200000001");
+});

@@ -9,6 +9,10 @@ export default class Cpf {
         this.value = value;
     }
 
+    getValue(): string {
+        return this.value;
+    }
+
     private isValid (rawCpf: string | null | undefined): boolean {
         if (!rawCpf) return false;
 
