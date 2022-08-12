@@ -1,17 +1,13 @@
-import Checkout from "../../../application/Checkout";
-import Connection from "../../database/Connection";
 import Http from "../../http/Http";
-import ItemRepositoryDatabase from "../../repositories/database/ItemRepositoryDatabase";
-import OrderRepositoryDatabase from "../../repositories/database/OrderRepositoryDatabase";
+import Checkout from "../../../application/Checkout";
 
 export default class OrderController {
 
-	constructor (readonly http: Http, readonly connection: Connection) {
+	constructor (readonly http: Http, readonly checkout: Checkout) {
 		http.on("post", "/orders/checkout", function (_: any, body: any) {
-			const itemRepository = new ItemRepositoryDatabase(connection);
-            const orderRepository = new OrderRepositoryDatabase(connection);
-			const previewOrder = new Checkout(itemRepository, orderRepository);
-			const output = previewOrder.execute({
+			const output = checkout.execute({
+				from: body.from,
+				to: body.to,
 				cpf: body.cpf,
 				date: new Date(body.date),
 				orderItems: body.orderItems,

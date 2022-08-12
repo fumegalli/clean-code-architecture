@@ -1,4 +1,3 @@
-import Dimensions from "./Dimensions";
 import OrderItem from "./OrderItem";
 
 export default class Item {
@@ -7,16 +6,13 @@ export default class Item {
         readonly id: number,
         readonly description: string,
         readonly price: number,
-        readonly dimensions: Dimensions = new Dimensions(),
+        readonly widthCm?: number,
+        readonly heightCm?: number,
+        readonly depthCm?: number,
+        readonly weightKg?: number,
+        readonly volume?: number,
+        readonly density?: number,
     ){}
-
-    getVolume (): number {
-        return this.dimensions.getVolume();
-    }
-
-    getDensity (): number {
-        return this.dimensions.getDensity();
-    }
 
     createOrderItem (quantity: number): OrderItem {
         return new OrderItem(this.id, this.price, quantity);

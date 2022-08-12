@@ -1,7 +1,6 @@
 import axios from "axios";
 
-test.skip("should call checkout endpoint", async () => {
-    // TODO: Conflict between test repositories and app repositories using same database
+test("should call checkout endpoint", async () => {
     const response = await axios({
         url: "http://localhost:3000/orders/checkout",
         method: "post",

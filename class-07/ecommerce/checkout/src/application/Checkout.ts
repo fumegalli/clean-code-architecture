@@ -1,16 +1,16 @@
 import Order from "../domain/entities/Order";
-import ItemRepository from "../domain/repositories/ItemRepository";
 import OrderRepository from "../domain/repositories/OrderRepository";
 import CalculateFreightGateway from "./gateway/CalculateFreightGateway";
 import DecrementStockGateway from "./gateway/DecrementStockGateway";
+import GetItemGateway from "./gateway/GetItemGateway";
 
 export default class Checkout {
     
     constructor (
-        readonly itemRepository: ItemRepository,
         readonly orderRepository: OrderRepository,
         readonly calculateFreightGateway: CalculateFreightGateway,
         readonly decrementStockGateway: DecrementStockGateway,
+        readonly getItemGateway: GetItemGateway,
     ) {}
 
     async execute (input: Input): Promise<Output> {
@@ -19,15 +19,15 @@ export default class Checkout {
         const orderItemsFreight = [];
         const orderItemsStock = [];
         for (const orderItem of input.orderItems) {
-            const item = await this.itemRepository.findById(orderItem.idItem);
+            const item = await this.getItemGateway.execute(orderItem.idItem);
             order.addItem(item, orderItem.quantity);
             orderItemsStock.push({
                 idItem: orderItem.idItem,
                 quantity: orderItem.quantity,
             });
             orderItemsFreight.push({
-                volume: item.getVolume(),
-                density: item.getDensity(),
+                volume: item.volume,
+                density: item.density,
                 quantity: orderItem.quantity,
             });
         }
