@@ -1,5 +1,7 @@
 import Order from "../domain/entities/Order";
+import OrderPlaced from "../domain/event/OrderPlaced";
 import OrderRepository from "../domain/repositories/OrderRepository";
+import Queue from "../infra/queue/Queue";
 import CalculateFreightGateway from "./gateway/CalculateFreightGateway";
 import DecrementStockGateway from "./gateway/DecrementStockGateway";
 import GetItemGateway from "./gateway/GetItemGateway";
@@ -11,6 +13,7 @@ export default class Checkout {
         readonly calculateFreightGateway: CalculateFreightGateway,
         readonly decrementStockGateway: DecrementStockGateway,
         readonly getItemGateway: GetItemGateway,
+        readonly queue: Queue,
     ) {}
 
     async execute (input: Input): Promise<Output> {
@@ -38,7 +41,8 @@ export default class Checkout {
         });
         order.freight = freight.total;
         await this.orderRepository.save(order);
-        await this.decrementStockGateway.decrement(orderItemsStock);
+        // await this.decrementStockGateway.decrement(orderItemsStock);
+        await this.queue.publish(new OrderPlaced(order.getCode(), orderItemsStock));
         const total = order.getTotal();
         return {
             code: order.getCode(),

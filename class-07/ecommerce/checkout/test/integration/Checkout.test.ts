@@ -3,9 +3,12 @@ import * as CalculateFreightGateway from "../../src/application/gateway/Calculat
 import * as DecrementStockGateway from "../../src/application/gateway/DecrementStockGateway";
 import PgPromiseAdapter from "../../src/infra/database/PgPromiseAdapter";
 import GetItemHttpGateway from "../../src/infra/gateway/GetItemHttpGateway";
+import RabbitMQAdapter from "../../src/infra/queue/RabbitMQAdapter";
 import OrderRepositoryDatabase from "../../src/infra/repositories/database/OrderRepositoryDatabase";
 
 test("should checkout", async () => {
+    const queue = new RabbitMQAdapter();
+    await queue.connect();
     const connection = new PgPromiseAdapter();
     const orderRepository = new OrderRepositoryDatabase(connection);
     await orderRepository.clean();
@@ -18,7 +21,7 @@ test("should checkout", async () => {
         async decrement(input: DecrementStockGateway.Input) { }
     };
     const getItemGateway = new GetItemHttpGateway();
-    const checkout = new Checkout(orderRepository, calculateFreightGateway, decrementStockGateway, getItemGateway);
+    const checkout = new Checkout(orderRepository, calculateFreightGateway, decrementStockGateway, getItemGateway, queue);
     const output = await checkout.execute({
         from: "22060030",
         to: "880015600",
