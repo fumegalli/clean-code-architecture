@@ -1,20 +1,37 @@
 import ExpressAdapter from "./infra/http/ExpressAdapter";
 import OrderController from "./infra/controller/http/OrderController";
-import PgPromiseAdapter from "./infra/database/PgPromiseAdapter";
-import Checkout from "./application/Checkout";
-import OrderRepositoryDatabase from "./infra/repositories/database/OrderRepositoryDatabase";
-import CalculateFreightHttpGateway from "./infra/gateway/CalculateFreightHttpGateway";
 import GetItemHttpGateway from "./infra/gateway/GetItemHttpGateway";
-import DecrementStockHttpGateway from "./infra/gateway/DecrementStockHttpGateway";
+import PreviewOrder from "./application/PreviewOrder";
+import CheckoutHandler from "./application/handler/CheckoutHandler";
+import OrderRepositoryDatabase from "./infra/repository/database/OrderRepositoryDatabase";
+import PgPromiseAdapter from "./infra/database/PgPromiseAdapter";
+import CalculateFreightHttpGateway from "./infra/gateway/CalculateFreightHttpGateway";
+import RabbitMQAdapter from "./infra/queue/RabbitMQAdapter";
+import * as DecrementStockGateway from "./application/gateway/DecrementStockGateway";
+import Checkout from "./application/Checkout";
+import CheckoutQueue from "./infra/queue/CheckoutQueue";
+import OrderQuery from "./infra/query/OrderQuery";
+import OrderProjectionHandler from "./application/handler/OrderProjectionHandler";
 
-const http = new ExpressAdapter();
-const connection = new PgPromiseAdapter();
-const orderRepository = new OrderRepositoryDatabase(connection);
-const calculateFreightGateway = new CalculateFreightHttpGateway();
-const decrementStockGateway = new DecrementStockHttpGateway();
-const getItemGateway = new GetItemHttpGateway();
-const checkout = new Checkout(orderRepository, calculateFreightGateway, decrementStockGateway, getItemGateway);
+async function init () {
+	const http = new ExpressAdapter();
+	const getItemGateway = new GetItemHttpGateway();
+	const previewOrder = new PreviewOrder(getItemGateway);
+	const queue = new RabbitMQAdapter();
+	await queue.connect();
+	const decrementStockGateway: DecrementStockGateway.default = {
+		async decrement (input: DecrementStockGateway.Input): Promise<void> {
+		}
+	};
+	const connection = new PgPromiseAdapter();
+	const orderRepository = new OrderRepositoryDatabase(connection)
+	const checkoutHandler = new CheckoutHandler(orderRepository, new CalculateFreightHttpGateway(), decrementStockGateway, getItemGateway, queue);
+	const checkout = new Checkout(queue);
+	const orderQuery = new OrderQuery(connection);
+	const orderProjectionHandler = new OrderProjectionHandler(orderQuery, getItemGateway);
+	new OrderController(http, previewOrder, checkout);
+	new CheckoutQueue(queue, checkoutHandler, orderProjectionHandler);
+	http.listen(3000);
+}
 
-new OrderController(http, checkout);
-
-http.listen(3000);
+init();

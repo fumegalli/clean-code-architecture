@@ -1,21 +1,19 @@
 import OrderCoupon from "./OrderCoupon";
 
 export default class Coupon {
-    constructor (
-        readonly code: string,
-        readonly percentage: number,
-        readonly expiresAt: Date = new Date()
-    ) {}
 
-    calculateDiscount (total: number): number {
-        return (total * this.percentage) / 100;
-    }
+	constructor (readonly code: string, readonly percentage: number, readonly expireDate: Date) {
+	}
 
-    isExpired (date: Date): boolean {
-        return this.expiresAt.getTime() < date.getTime();
-    }
+	isExpired (date: Date) {
+		return this.expireDate.getTime() < date.getTime();
+	}
 
-    createOrderCoupon (): OrderCoupon {
-        return new OrderCoupon(this.code, this.percentage);
-    }
+	getDiscount (total: number) {
+		return (total * this.percentage)/100;
+	}
+
+	createOrderCoupon () {
+		return new OrderCoupon(this.code, this.percentage)
+	}
 }

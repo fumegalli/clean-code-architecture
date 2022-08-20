@@ -1,38 +1,21 @@
-drop table if exists ccca_checkout.order_item;
-drop table if exists ccca_checkout.order;
-drop table if exists ccca_checkout.coupon;
-drop table if exists ccca_checkout.item;
+drop table if exists ccca.order_projection;
+drop table if exists ccca.order_item;
+drop table if exists ccca.order;
+drop table if exists ccca.coupon;
 
-drop schema if exists ccca_checkout;
-
-create schema ccca_checkout;
-
-create table ccca_checkout.item (
-	id_item serial primary key,
-	description text,
-	price numeric,
-	width integer,
-	height integer,
-	length integer,
-	weight integer
-);
-
-insert into ccca_checkout.item (description, price, width, height, length, weight) values ('Guitarra', 1000, 100, 30, 10, 3);
-insert into ccca_checkout.item (description, price, width, height, length, weight) values ('Amplificador', 5000, 50, 50, 50, 20);
-insert into ccca_checkout.item (description, price, width, height, length, weight) values ('Cabo', 30, 10, 10, 10, 1);
-
-create table ccca_checkout.coupon (
+create table ccca.coupon (
 	code text,
 	percentage numeric,
 	expire_date timestamp,
 	primary key (code)
 );
 
-insert into ccca_checkout.coupon (code, percentage, expire_date) values ('VALE20', 20, '2022-10-10T10:00:00');
-insert into ccca_checkout.coupon (code, percentage, expire_date) values ('VALE20_EXPIRED', 20, '2020-10-10T10:00:00');
+insert into ccca.coupon (code, percentage, expire_date) values ('VALE20', 20, '2022-10-10T10:00:00');
+insert into ccca.coupon (code, percentage, expire_date) values ('VALE20_EXPIRED', 20, '2020-10-10T10:00:00');
 
-create table ccca_checkout.order (
+create table ccca.order (
 	id_order serial,
+	guid text,
 	coupon_code text,
 	coupon_percentage numeric,
 	code text,
@@ -44,10 +27,15 @@ create table ccca_checkout.order (
 	primary key (id_order)
 );
 
-create table ccca_checkout.order_item (
-	id_order integer references ccca_checkout.order (id_order),
-	id_item integer references ccca_checkout.item (id_item),
+create table ccca.order_item (
+	id_order integer references ccca.order (id_order),
+	id_item integer,
 	price numeric,
 	quantity integer,
 	primary key (id_order, id_item)
+);
+
+create table ccca.order_projection (
+	guid text,
+	data jsonb not null default '{}'
 );

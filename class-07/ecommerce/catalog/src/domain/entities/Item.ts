@@ -1,19 +1,15 @@
-import Dimensions from "./Dimensions";
+import Dimension from "./Dimension";
 
 export default class Item {
 
-    constructor (
-        readonly id: number,
-        readonly description: string,
-        readonly price: number,
-        readonly dimensions: Dimensions = new Dimensions(),
-    ){}
+	constructor (readonly idItem: number, readonly description: string, readonly price: number, readonly dimension: Dimension = new Dimension(0, 0, 0, 0)) {
+	}
 
-    getVolume (): number {
-        return this.dimensions.getVolume();
-    }
+	getVolume () {
+		return this.dimension.getVolume();
+	}
 
-    getDensity (): number {
-        return this.dimensions.getDensity();
-    }
+	getDensity () {
+		return this.dimension.getDensity();
+	}
 }

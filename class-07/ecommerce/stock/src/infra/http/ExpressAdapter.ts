@@ -1,5 +1,6 @@
 import Http from "./Http";
 import express, { Request, Response } from "express";
+import { injectable } from "tsyringe";
 
 export default class ExpressAdapter implements Http {
 	app: any;

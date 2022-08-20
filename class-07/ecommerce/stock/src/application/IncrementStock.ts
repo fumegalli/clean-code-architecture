@@ -1,19 +1,21 @@
-import StockEntry from "../domain/entities/StockEntry";
-import StockEntryRepository from "../domain/repositories/StockEntryRepository";
+import { inject, injectable } from "tsyringe";
+import StockEntry from "../domain/entity/StockEntry"
+import StockEntryRepository from "../domain/repository/StockEntryRepository"
 
+@injectable()
 export default class IncrementStock {
 
-    constructor (readonly stockEntryRepository: StockEntryRepository) {}
+	constructor (@inject("StockEntryRepository") readonly stockEntryRepository: StockEntryRepository) {
+	}
 
-    async execute (input: Input): Promise<void> {
-        for (const entry of input) {
-            const stockEntry = new StockEntry(entry.idItem, "in", entry.quantity);
-            await this.stockEntryRepository.save(stockEntry);
-        }
-    }
+	async execute (input: Input): Promise<void> {
+		for (const stockEntryData of input) {
+			await this.stockEntryRepository.save(new StockEntry(stockEntryData.idItem, "in", stockEntryData.quantity));
+		}
+	}
 }
 
 type Input = {
-    idItem: number,
-    quantity: number,
+	idItem: number,
+	quantity: number
 }[]

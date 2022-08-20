@@ -2,19 +2,10 @@ import OrderItem from "./OrderItem";
 
 export default class Item {
 
-    constructor (
-        readonly id: number,
-        readonly description: string,
-        readonly price: number,
-        readonly widthCm?: number,
-        readonly heightCm?: number,
-        readonly depthCm?: number,
-        readonly weightKg?: number,
-        readonly volume?: number,
-        readonly density?: number,
-    ){}
+	constructor (readonly idItem: number, readonly description: string, readonly price: number, readonly width?: number, readonly height?: number, readonly length?: number, readonly weight?: number, readonly volume?: number, readonly density?: number) {
+	}
 
-    createOrderItem (quantity: number): OrderItem {
-        return new OrderItem(this.id, this.price, quantity);
-    }
+	createOrderItem (quantity: number) {
+		return new OrderItem(this.idItem, this.price, quantity)
+	}
 }

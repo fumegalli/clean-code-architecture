@@ -1,27 +1,34 @@
 import Cpf from "../../src/domain/entities/Cpf";
 
-test("should throw error when cpf is empty", () => {
-    expect(() => new Cpf("")).toThrow(new Error("Invalid CPF"));
-});
-
-const invalidCpfs = [
-    '11111111111',
-    '111.111.111-11',
-    '22222222222',
+const validCPFs = [
+	"886.634.854-68",
+	"47308766870"
 ];
 
-test.each(invalidCpfs)("should throw error when cpf is all same digit", (cpf) => {
-    expect(() => new Cpf(cpf)).toThrow(new Error("Invalid CPF"));
+test.each(validCPFs)("Deve validar um CPF válido", function (value) {
+	const cpf = new Cpf(value);
+	expect(cpf).toBeDefined();
+	expect(cpf.getValue()).toBe(value);
 });
 
-const validCpfs = [
-    '231.609.190-30',
-    '935.411.347-80',
-    '83705915070',
+const CPFsWithSameDigits = [
+	"111.111.111-11",
+	"222.222.222-22",
+	"333.333.333-33"
 ];
 
-test.each(validCpfs)("should create valid cpf", (value) => {
-    const cpf = new Cpf(value);
+test.each(CPFsWithSameDigits)("Deve validar um CPF inválido com todos os dígitos iguais", function (cpf) {
+	expect(() => new Cpf(cpf)).toThrow(new Error("Cpf Inválido"));
+});
 
-    expect(cpf.value).toBe(value);
+test("Deve validar um CPF inválido com o tamanho maior", function () {
+	expect(() => new Cpf("111.111.111-1111")).toThrow(new Error("Cpf Inválido"));
+});
+
+test("Deve validar um CPF inválido com o tamanho menor", function () {
+	expect(() => new Cpf("111.111.111")).toThrow(new Error("Cpf Inválido"));
+});
+
+test("Deve validar um CPF vazio", function () {
+	expect(() => new Cpf("")).toThrow(new Error("Cpf Inválido"));
 });

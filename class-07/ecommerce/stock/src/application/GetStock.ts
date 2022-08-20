@@ -1,19 +1,17 @@
-import StockCalculator from "../domain/entities/StockCalculator";
-import StockEntryRepository from "../domain/repositories/StockEntryRepository";
+import { inject, injectable } from "tsyringe";
+import StockCalculator from "../domain/entity/StockCalculator";
+import StockEntry from "../domain/entity/StockEntry"
+import StockEntryRepository from "../domain/repository/StockEntryRepository"
 
+@injectable()
 export default class GetStock {
 
-    constructor (readonly stockEntryRepository: StockEntryRepository) {}
+	constructor (@inject("StockEntryRepository") readonly stockEntryRepository: StockEntryRepository) {
+	}
 
-    async execute (idItem: number): Promise<Output> {
-        const entries = await this.stockEntryRepository.findByIdItem(idItem);
-        const quantity = StockCalculator.calculate(entries);
-        return {
-            quantity,
-        } 
-    }
-}
-
-type Output = {
-    quantity: number,
+	async execute (idItem: number): Promise<number> {
+		const stockEntries = await this.stockEntryRepository.listByIdItem(idItem);
+		const total = StockCalculator.calculate(stockEntries);
+		return total;
+	}
 }
